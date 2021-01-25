@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Lab 3</title>
+</head>
+<body>
+<h1 id="header">
+NASA Picure of the Day
+</h1>
+<h2 id="creator">
+Piotr Ramza
+</h2>
+<img id="image">
+<p id="description">
+This is NASA's picture of the day
+</p>
+
+<script>
+let file="https://api.nasa.gov/planetary/apod?api_key=dgvFnQ9zbmN93BcYj9hLFSPairOpGynbK9Qlo8Q1"
+fetch (file)
+.then(x => {
+      return x.json();
+      } )
+.then(json => {
+       document.getElementById("header").innerHTML = json.title
+       document.getElementById("creator").innerHTML = json.copyright
+       document.getElementById("description").innerHTML = json.explanation
+       document.getElementById("image").src = json.hdurl
+      } );
+</script>
+</body>
+</html>
