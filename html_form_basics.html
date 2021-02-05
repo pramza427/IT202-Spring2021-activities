@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>repl.it</title>
+  </head>
+  <body>
+    <h1>Form Basics</h1>
+    
+    <form id="form1" name="form1">
+      <label for="text1">Name:</label>
+      <input type="text" id="text1" name="text1"><br><br>
+      <label for="radio1">My favorite color is:</label>
+      <input type="radio" name="radio1" value="red">Red  
+      <input type="radio" name="radio1" value="green">Green  
+      <input type="radio" name="radio1" value="blue">Blue  <br><br>
+      <label for="select1">My favorite day of the week is:</label>
+      <select id="select1" name="select1">
+        <option value="null"> </option>
+        <option value="mon">Mon</option>
+        <option value="wed">Wed</option>
+        <option value="fri">Fri</option>
+      </select><br><br>
+      <label for="textarea1">Additional Feedback:</label>
+      <textarea id="textarea1" name="textarea1">Please provide any additional feedback</textarea>
+
+    </form>
+
+
+    <p id="uptonSinclairQuote">
+It is difficult to get a man to understand something, when his salary depends upon his not understanding it! -- Upton Sinclair
+    </p>
+
+
+    <script>
+      document.querySelector("#text1").value = "Piotr Ramza";
+      document.querySelectorAll("input[type='radio']")[1].checked = true;
+      document.querySelector("#textarea1").value = document.querySelector("#uptonSinclairQuote").innerHTML;
+      let mySelect = document.querySelector("#select1");
+      mySelect.addEventListener("change", function() {
+        console.log("selected: " + mySelect.value);
+      });
+
+    </script>
+  </body>
+</html>
