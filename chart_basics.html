@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<head>
+	<title>School Charts</title>
+</head>
+
+<body>
+	<h2>Learning Google Charts using Chicago School and Vaccine APIs</h2>
+	<div id="pie" style="width:100%; height:50%"></div>
+	<div id="line" style="width:100%; height:50%"></div>
+</body>
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(drawChart);
+
+	let myPieArray = [['School Type', 'Number Of Schools']];
+
+    fetch("https://data.cityofchicago.org/resource/dw27-rash.json?$SELECT=school_type,count(school_type)&$GROUP=school_type")
+    .then( (response) => {return response.json(); })
+    .then( (result) => {
+    	for(type of result){
+    		let smallArray = [type.school_type, parseInt(type.count_school_type)];
+    		myPieArray.push(smallArray);
+    	}
+    });
+
+    let myLineArray = [["Date", "Vaccines Given"]];
+    fetch("https://data.cityofchicago.org/resource/553k-3xzc.json?$SELECT=date,sum(total_doses_cumulative)&$GROUP=date&$ORDER=date")
+    .then( (response) => {return response.json(); })
+    .then( (result) => {
+    	for(vac of result){
+    		let smallLineArray = [new Date(vac.date), parseInt(vac.sum_total_doses_cumulative)];
+    		myLineArray.push(smallLineArray);
+    	}
+    });
+
+
+    function drawChart() {
+    	// Draw Pie Chart
+        var data = google.visualization.arrayToDataTable(myPieArray);
+
+        var options = {
+          title: 'Types of schools in Chicago',
+          'width' :'50%',
+          'height' :500
+        };
+
+        var chart = new google.visualization.PieChart(document.querySelector("#pie"));
+
+        chart.draw(data, options);
+        // Pie Chart Drawn
+
+        // Draw Line Chart
+        var line_data = google.visualization.arrayToDataTable(myLineArray);
+
+        var line_options = {
+          title: 'Cumulative Vaccines Given in Chicago',
+          legend: { position: 'bottom' }
+        };
+
+        var line_chart = new google.visualization.LineChart(document.querySelector("#line"));
+
+        line_chart.draw(line_data, line_options);
+    }
+        // Line Chart Drawn
+    </script>
