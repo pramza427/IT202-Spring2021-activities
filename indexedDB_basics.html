@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<head>
+	<!-- Include Dexie -->
+    <script src="https://unpkg.com/dexie@latest/dist/dexie.js"></script>
+</head>
+<body>
+	<h2>Chicago Public School API</h2>
+	<div id="a"></div>
+	<div id="b"></div>
+	<div id="c">List of schools with first year attendence of > 98.0%:</div>
+		<ol id="att">
+		</ol>
+	<div id="d">List of schools that start with K:</div>
+		<ol id="K">
+		</ol>
+	<div id="e"></div>
+
+</body>
+
+<script>
+	// Create a database
+	const db = new Dexie('My Database');
+	db.version(2).stores({
+		schools: 'long_name,student_attainment_rating,student_attendance_year_1, type'
+	});
+
+	// get the Schools data and populate the database
+    fetch("https://data.cityofchicago.org/resource/dw27-rash.json")
+    .then ( (response) => {return response.json() })
+    .then ( (result) => {
+    	for(school of result){
+    		db.schools.put({long_name: school.long_name, 	
+    						student_attainment_rating: school.student_attainment_rating, 
+    						student_attendance_year_1: parseFloat(school.student_attendance_year_1),
+    						address: school.address,
+    						type: school.school_type,
+    						website: school.website});		
+    	}
+    });
+
+    // div a = total number of schools
+    db.schools.count().then(function(c){document.querySelector("#a").innerHTML = "Number of schools: " + c;});
+
+    // find schools with average attainment
+    db.schools.where("student_attainment_rating").equals("AVERAGE").count()
+    	.then(function(c){document.querySelector("#b").innerHTML = "Number of schools with average student attainment: " + c;});
+
+    // List schools with attendance over or equal to 98.0%
+    db.schools.where("student_attendance_year_1").above(97.9).each(function(school){
+    	let newListItem = document.createElement("li");
+    	newListItem.innerHTML = school.long_name;
+    	document.querySelector("#att").append(newListItem);
+    });
+
+    // List schools that start with the letter K
+    db.schools.where("long_name").startsWith("K").each(function(school){
+    	let newListItem = document.createElement("li");
+    	newListItem.innerHTML = school.long_name;
+    	document.querySelector("#K").append(newListItem);
+    });
+    	
+    //delete Charter schools from the database
+    db.schools.where("type").equals("Charter").delete();
+
+    // print total number of schools again
+    db.schools.count().then(function(c){
+    	document.querySelector("#e").innerHTML = "Number of non-charter schools: " + c;
+    });
+
+</script>
+
