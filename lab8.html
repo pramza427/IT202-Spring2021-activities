@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>pramza2 lab8</title>
+
+
+  </head>
+  <body>
+
+    <canvas id="c1" width="500" height="500"></canvas>
+    <script>
+
+      let c = document.querySelector("#c1");
+      c.style.backgroundColor = "silver";
+      let ctx = c.getContext("2d");
+
+      let my_colors = ["red", "green", "blue", "purple", "yellow", "pink", "black"];
+
+      // create objects per the lab activity
+      let gameObjs = [];
+      gameObjs.push( {x: 250, y: 250, radius: 25, color: "red", colliding: false} )
+      gameObjs.push( {x: 275, y: 275, radius: 25, color: "green", colliding: false} )
+      gameObjs.push( {x: 200, y: 300, radius: 25, color: "blue", colliding: false} )
+      var i;
+      for(i = 0; i < 25; i++){
+        let new_circle = {x: Math.random()*500, y: Math.random()*500, radius: 25, color: my_colors[i%7], colliding: false}
+        gameObjs.push(new_circle);
+      }
+
+      function drawCircles(){
+        gameObjs.forEach( (obj) => {
+          ctx.beginPath()
+          ctx.arc(obj.x, obj.y, obj.radius, 0, Math.PI*2);
+          ctx.closePath();
+          ctx.fillStyle = obj.color;
+          ctx.fill();
+          if(obj.colliding){
+            ctx.lineWidth = 5;
+            ctx.strokeStyle = "white";
+            ctx.stroke();
+          }
+        });
+      }
+      
+
+      // create a function named areColliding that accepts two objects and returns a boolen based on collision
+      // https://developer.mozilla.org/en-US/docs/Games/Techniques/2D_collision_detection
+      function areColliding(c1, c2){
+        var dx = c1.x - c2.x;
+        var dy = c1.y - c2.y;
+        var dist = Math.sqrt(dx*dx + dy*dy);
+
+        if(dist < c1.radius + c2.radius){
+          return true
+        }
+        return false
+      }
+
+      // loop the objects to compare every pair
+      //    and if a pair are colliding, redraw them
+      //    with a white border
+      var i;
+      for(i = 0; i < gameObjs.length; i++){
+        var j;
+        for(j = 0; j < gameObjs.length; j++){
+          if(i != j){
+            if(areColliding(gameObjs[i], gameObjs[j])){
+              gameObjs[i].colliding = true;
+              gameObjs[j].colliding = true;
+            }
+          }
+        }
+      }
+
+      // once you get that working, update the code above to create 25 additional gameObjects with random x, y and color values; and push them to the array before the drawing and comparison
+      drawCircles();
+
+
+    </script>
+  </body>
+</html>
