@@ -150,6 +150,7 @@
 			  		};
 			  		navigator.mediaDevices.getUserMedia(constraints)
 			  			.then(stream => {
+			  				currentStream = stream;
 			  				video.srcObject = stream;
 			  			}).catch(error => {
 			  				console.error(error);
