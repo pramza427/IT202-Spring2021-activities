@@ -88,17 +88,18 @@
   	const button = document.querySelector("#button");
   	const select = document.querySelector("#select");
   	let currentStream;
+  	let nextCamera = '';
 
   	button.addEventListener("click", event => {
   		if(typeof currentStream !== 'undefined'){
   			stopMediaTracks(currentStream);
   		}
   		const videoConstrainsts = {};
-  		if(select.value === ''){
+  		if(nextCamera === ''){
   			videoConstrainsts.facingMode = 'user';
   		}
   		else {
-  			videoConstrainsts.deviceId = { exact: select.value };
+  			videoConstrainsts.deviceId = { exact: nextCamera };
   		}
   		const constraints = {
   			video: true,
@@ -134,27 +135,7 @@
   				console.log(mediaDevice.deviceId);
   				option.value = mediaDevice.deviceId;
   				option.addEventListener("click", event => {
-			  		if(typeof currentStream !== 'undefined'){
-			  			stopMediaTracks(currentStream);
-			  		}
-			  		const videoConstrainsts = {};
-			  		if(select.value === ''){
-			  			videoConstrainsts.facingMode = 'environment';
-			  		}
-			  		else {
-			  			videoConstrainsts.deviceId = { exact: select.value };
-			  		}
-			  		const constraints = {
-			  			video: true,
-			  			audio: false
-			  		};
-			  		navigator.mediaDevices.getUserMedia(constraints)
-			  			.then(stream => {
-			  				currentStream = stream;
-			  				video.srcObject = stream;
-			  			}).catch(error => {
-			  				console.error(error);
-			  			});
+  					nextCamera = option.value;
 			  	});
   				const label = mediaDevice.label || `Camera ${count++}`;
   				option.innerHTML = label;
