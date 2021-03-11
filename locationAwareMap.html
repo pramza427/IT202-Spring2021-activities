@@ -1,0 +1,71 @@
+<style>
+	bold { font-weight: bold; }
+	.map{
+		height: 70%;
+		width: 90%;
+	}
+</style>
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Your Location</title>
+		<meta charset="utf-8">
+  		<meta name="viewport" content="width=device-width, initial-scale=1">
+  		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+	</head>
+
+	<body>
+		<div class="map" id="map"></div>
+		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAtemI2wGOdaB-bZLurssCbWR3J1335ULY&callback=initMap&libraries=&v=weekly" async></script>
+		<div class="text" style="font-size:25px"></div>
+	</body>
+</html>
+
+<script>
+// Some code taken from developer.mozilla.org
+  var myMap;
+  const status = document.querySelector('.text');
+  const map = document.querySelector('#map');
+
+  if(!navigator.geolocation) {
+    status.innerHTML = 'Geolocation is not supported by your browser';
+  } else {
+    status.innerHTML = 'Locating…';
+    navigator.geolocation.watchPosition(success, error);
+  }
+
+  function success(position) {
+    const latitude  = position.coords.latitude;
+    const longitude = position.coords.longitude;
+
+    status.innerHTML = "<bold>Latitude:</bold> " + latitude + " &emsp;<bold>Longitude:</bold> " + longitude + 
+    "<br><bold>Time:</bold> " + new Date().toUTCString() + "<br> <br>" + status.innerHTML;
+
+    var cords = { lat: latitude, lng: longitude};
+    myMap.setCenter(cords);
+    myMap.setZoom(15);
+    
+    new google.maps.Circle({
+    	strokeColor: "#FF0000",
+      	fillColor: "#FF0000",
+    	map: myMap,
+    	center: cords,
+    	radius: 30,
+    });
+  }
+
+  function error() {
+    status.innerHTML = 'Unable to retrieve your location';
+  }
+
+  function initMap(){
+    const userLocation = { lat: 41.878 , lng: -87.629 };
+    // The map, centered at Uluru
+    myMap = new google.maps.Map(document.getElementById("map"), {
+      zoom: 10,
+      center: userLocation,
+    });
+  }
+
+</script>
