@@ -106,12 +106,15 @@
   		};
   		navigator.mediaDevices.getUserMedia(constraints)
   			.then(stream => {
+  				currentStream = stream;
   				video.srcObject = stream;
-  				navigator.mediaDevices.enumerateDevices().then(gotDevices);
-  			}).catch(error => {
+    			return navigator.mediaDevices.enumerateDevices();	
+  			})
+  			.then(gotDevices)
+  			.catch(function(error) {
   				console.error(error);
   			});
-
+		
   	});
 
   	
@@ -122,11 +125,13 @@
   	}
 
   	function gotDevices(mediaDevices) {
+  		console.log(mediaDevices);
   		select.innerHTML = '';
   		let count = 1;
   		mediaDevices.forEach(mediaDevice => {
   			if (mediaDevice.kind === "videoinput"){
   				const option = document.createElement('button');
+  				console.log(mediaDevice.deviceId);
   				option.value = mediaDevice.deviceId;
   				option.addEventListener("click", event => {
 			  		if(typeof currentStream !== 'undefined'){
@@ -134,7 +139,7 @@
 			  		}
 			  		const videoConstrainsts = {};
 			  		if(select.value === ''){
-			  			videoConstrainsts.facingMode = 'user';
+			  			videoConstrainsts.facingMode = 'environment';
 			  		}
 			  		else {
 			  			videoConstrainsts.deviceId = { exact: select.value };
@@ -155,6 +160,7 @@
   				select.appendChild(option);
   			}
   		});
+
   	}
   </script>
 </body>
